@@ -1,0 +1,71 @@
+﻿<!--
+The MIT License (MIT)
+Copyright (c) 2012 Richard Garside - www.nogginbox.co.uk
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->	
+<Page
+	x:Class="InlineGroupHeaderApp.MainPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:InlineGroupHeaderApp"
+	xmlns:selectors="using:InlineGroupHeaderApp.Selectors"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	 mc:Ignorable="d">
+	<Page.Resources>
+		<ResourceDictionary>
+			<!-- Header and item template must be the same size,
+			the first size of item in grid view will dictate the size of the others -->
+			
+			<!-- Zoomed in templates and selectors -->
+			<DataTemplate x:Key="FilmHeader">
+				<Border Margin="6" Width="250" Height="100">
+					<TextBlock Text="{Binding Title}" Foreground="GreenYellow" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+				</Border>
+			</DataTemplate>
+			<DataTemplate x:Key="FilmItem">
+				<Border Margin="6" Width="250" Height="100" Background="DarkSlateGray">
+					<StackPanel>
+						<HyperlinkButton NavigateUri="{Binding Link}">
+							<TextBlock Text="{Binding Title}" Style="{StaticResource ItemTextStyle}"/>
+						</HyperlinkButton>
+						<TextBlock Text="{Binding Year}" Style="{StaticResource CaptionTextStyle}" Padding="20,0,0,0" />
+					</StackPanel>
+				</Border>
+			</DataTemplate>
+			<selectors:ItemOrHeaderSelector
+                x:Key="FilmItemOrHeaderSelector"
+                Item="{StaticResource FilmItem}"
+                Group="{StaticResource FilmHeader}" />
+
+			<!-- Zoomed out templates and selectors -->
+			<DataTemplate x:Key="GroupTemplate">
+				<Border Margin="6" Width="100" Height="100" Background="GreenYellow">
+					<TextBlock Text="{Binding Title}" Foreground="Black" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+				</Border>
+			</DataTemplate>
+			<DataTemplate x:Key="EmptyGroupTemplate">
+				<Border Margin="6" Width="100" Height="100" Background="LightGray">
+					<TextBlock Text="{Binding Title}" Foreground="Black" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+				</Border>
+			</DataTemplate>
+			<selectors:EmptyOrFullSelector
+                x:Key="FilmGroupEmptyOrFullSelector"
+                Empty="{StaticResource EmptyGroupTemplate}"
+                Full="{StaticResource GroupTemplate}" />
+		</ResourceDictionary>
+	</Page.Resources>
+
+	<Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+		<SemanticZoom x:Name="FilmZoom">
+			<SemanticZoom.ZoomedOutView>
+				<GridView ItemsSource="{Binding Groups}" ItemTemplateSelector="{StaticResource FilmGroupEmptyOrFullSelector}" />
+			</SemanticZoom.ZoomedOutView>
+			<SemanticZoom.ZoomedInView>
+				<GridView ItemsSource="{Binding ItemsWithHeaders}" ItemTemplateSelector="{StaticResource FilmItemOrHeaderSelector}" SelectionMode="None" />
+			</SemanticZoom.ZoomedInView>
+		</SemanticZoom>
+	</Grid>
+</Page>
